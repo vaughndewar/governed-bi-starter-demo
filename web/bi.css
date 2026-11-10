@@ -1,0 +1,77 @@
+/* Governed BI starter demo. Uses the design tokens in base.css. */
+.month-bar { display: flex; flex-wrap: wrap; gap: .75rem 2rem; align-items: end; margin-top: 1.5rem; }
+.month-bar label { display: block; font-weight: 600; margin-bottom: .3rem; }
+.month-bar select { font: inherit; padding: .5rem .9rem; border-radius: 8px; border: 1px solid var(--muted); background: var(--bg); color: var(--text); min-width: 12rem; }
+.month-bar p { margin: 0; flex-basis: 100%; min-height: 1.6em; } /* always its own row, so the page does not shift when the text changes */
+
+/* Tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); }
+.table-wrap:focus-visible { outline-offset: 0; }
+table.data { width: 100%; border-collapse: collapse; font-size: .98rem; }
+table.data caption { text-align: left; padding: .8rem 1rem; font-weight: 700; }
+table.data th, table.data td { padding: .65rem 1rem; text-align: left; border-top: 1px solid var(--border); vertical-align: top; }
+table.data thead th { color: var(--muted); font-size: .88rem; font-weight: 700; }
+/* On phones these tables scroll inside their own box instead of squeezing every column. */
+table.data.wide { min-width: 44rem; }
+table.data.mid { min-width: 34rem; }
+table.data .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.data tbody th { font-weight: 600; }
+table.data tr.total th, table.data tr.total td { font-weight: 700; border-top: 2px solid var(--muted); }
+table.data tr.governed { background: var(--bg-alt); }
+.tag { display: inline-block; font-size: .8rem; font-weight: 700; border: 1px solid var(--muted); border-radius: 999px; padding: .05rem .55rem; white-space: nowrap; color: var(--muted); }
+.tag.ok { color: var(--ok); border-color: var(--ok); }
+:root { --ok: #1d6b3a; }
+@media (prefers-color-scheme: dark) { :root { --ok: #5fd08a; } }
+
+/* Measure cards */
+.measure h3 { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem; align-items: baseline; }
+.measure .owner { color: var(--muted); font-size: .92rem; margin: 0 0 .6rem; }
+.measure details { margin-top: .75rem; }
+.measure summary { cursor: pointer; font-weight: 600; }
+pre.sql { margin: .6rem 0 0; padding: .8rem 1rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; font: .85rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+/* KPI tiles */
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-bottom: 2rem; min-height: 15rem; }
+@media (min-width: 46rem) { .tiles { grid-template-columns: repeat(4, 1fr); min-height: 8.5rem; } }
+.tile { border: 1px solid var(--border); border-radius: var(--radius); padding: .8rem 1rem; background: var(--bg); }
+.tile b { display: block; font-size: 1.7rem; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.tile .label { display: block; color: var(--muted); font-size: .9rem; margin-top: .15rem; }
+.tile .delta { display: block; font-size: .88rem; margin-top: .35rem; font-variant-numeric: tabular-nums; }
+
+/* Chart */
+.chart { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); padding: .5rem; min-height: 16rem; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart .grid-line { stroke: var(--border); stroke-width: 1; }
+.chart .axis-text { fill: var(--muted); font-size: 12px; }
+.chart .bar { fill: var(--muted); }
+.chart .bar.sel { fill: var(--accent); }
+.chart .val { fill: var(--text); font-size: 13px; font-weight: 700; }
+.chart-table { margin-top: .75rem; }
+.chart-table summary { cursor: pointer; font-weight: 600; }
+.chart-table .table-wrap { margin-top: .6rem; }
+
+/* Checks */
+.checks { list-style: none; padding: 0; margin: 0; display: grid; gap: .75rem; }
+.checks li { border: 1px solid var(--border); border-radius: var(--radius); padding: .9rem 1.1rem; background: var(--bg); }
+.checks .t { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem; font-weight: 700; }
+.checks .d { margin: .3rem 0 0; color: var(--muted); font-size: .95rem; }
+.checks .o { margin: .3rem 0 0; font-size: .92rem; font-variant-numeric: tabular-nums; }
+
+/* Reserve space close to the real heights so the page does not jump when data loads.
+   Values are slightly under the measured heights, so no blank gap is left afterwards. */
+#three-ways { min-height: 21rem; }
+#measures { min-height: 28rem; }
+#region-table { min-height: 17rem; }
+#check-list { min-height: 44rem; }
+.chart { min-height: 22rem; }
+@media (max-width: 46rem) {
+  #three-ways { min-height: 21rem; }
+  #measures { min-height: 42rem; }
+  #check-list { min-height: 54rem; }
+  .chart { min-height: 15rem; }
+}
+@media (max-width: 30rem) {
+  #three-ways { min-height: 46rem; }
+  #measures { min-height: 62rem; }
+  #check-list { min-height: 72rem; }
+}

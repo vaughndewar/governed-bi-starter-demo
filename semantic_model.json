@@ -1,0 +1,63 @@
+{
+  "name": "Sales (demo)",
+  "description": "A shared set of business measures. Each is defined once; every report reads these, so a number means the same thing everywhere.",
+  "parameters": {
+    "month": "Month as YYYY-MM",
+    "month_end": "Last day of that month, YYYY-MM-DD",
+    "region": "A region name, or NULL for the whole company"
+  },
+  "measures": [
+    {
+      "id": "net_revenue",
+      "name": "Net revenue",
+      "unit": "money",
+      "owner": "Finance",
+      "status": "Certified",
+      "definition": "Invoiced value in the month, after discounts and after returned goods are taken off. Counted on the invoice date. Freight and tax are not included.",
+      "sql": "SELECT ROUND(SUM((qty - returned_qty) * unit_price * (1 - discount_pct)), 2)\nFROM v_sales\nWHERE invoice_month = :month\n  AND (:region IS NULL OR region = :region)"
+    },
+    {
+      "id": "gross_margin_pct",
+      "name": "Gross margin %",
+      "unit": "percent",
+      "owner": "Finance",
+      "status": "Certified",
+      "definition": "Net revenue minus the standard cost of the goods that were kept, as a share of net revenue.",
+      "sql": "SELECT ROUND(1.0 - SUM((qty - returned_qty) * unit_cost)\n  / SUM((qty - returned_qty) * unit_price * (1 - discount_pct)), 4)\nFROM v_sales\nWHERE invoice_month = :month\n  AND (:region IS NULL OR region = :region)"
+    },
+    {
+      "id": "on_time_pct",
+      "name": "On-time delivery %",
+      "unit": "percent",
+      "owner": "Operations",
+      "status": "Certified",
+      "definition": "Share of order lines shipped in the month that left on or before the date promised to the customer.",
+      "sql": "SELECT ROUND(1.0 * SUM(ship_date <= promised_date) / COUNT(*), 4)\nFROM v_sales\nWHERE ship_month = :month\n  AND (:region IS NULL OR region = :region)"
+    },
+    {
+      "id": "open_orders",
+      "name": "Open orders",
+      "unit": "money",
+      "owner": "Operations",
+      "status": "Certified",
+      "definition": "Value of order lines (after discount) that were ordered but not yet shipped at the end of the month.",
+      "sql": "SELECT ROUND(SUM(qty * unit_price * (1 - discount_pct)), 2)\nFROM v_sales\nWHERE order_date <= :month_end\n  AND (ship_date IS NULL OR ship_date > :month_end)\n  AND (:region IS NULL OR region = :region)"
+    }
+  ],
+  "alternatives": [
+    {
+      "id": "booked",
+      "name": "\"Revenue\" as orders booked",
+      "status": "Not certified",
+      "definition": "Orders entered in the month, at list price. Common in sales reports.",
+      "sql": "SELECT ROUND(SUM(qty * unit_price), 2)\nFROM v_sales\nWHERE order_month = :month"
+    },
+    {
+      "id": "invoiced",
+      "name": "\"Revenue\" as invoiced",
+      "status": "Not certified",
+      "definition": "Invoices dated in the month, after discount but before returns. Common in billing reports.",
+      "sql": "SELECT ROUND(SUM(qty * unit_price * (1 - discount_pct)), 2)\nFROM v_sales\nWHERE invoice_month = :month"
+    }
+  ]
+}
